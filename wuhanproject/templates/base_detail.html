@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang=en>
+
+<head>
+    <!-- Required meta tags -->
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+    <title>coronagram | {{ blog_post.title }}</title>
+    {% load static from staticfiles %}
+    {% include 'others/header_static.html' %}
+    {% include 'others/header_metas.html' %}
+    {% include 'others/favicon.html' %}
+
+
+</head>
+
+<body>
+{% include 'snippets/base_css.html' %}
+{% include 'snippets/header.html' %}
+
+<!-- Body -->
+<style type="text/css">
+    a:link {
+        color: inherit;
+        text-decoration: none;
+    }
+
+    a:visited {
+        color: inherit;
+    }
+
+    a:hover {
+        color: inherit;
+    }
+
+    a:active {
+        color: inherit;
+    }
+
+    .main {
+        min-height: 100vh;
+        height: 100%;
+    }
+</style>
+<div class="main">
+    {% block content %}
+
+    {% endblock content %}
+</div>
+<!-- End Body -->
+
+{% include 'snippets/footer.html' %}
+
+</body>
+
+
+</html>

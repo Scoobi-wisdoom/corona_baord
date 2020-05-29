@@ -1,0 +1,59 @@
+<div class="hidden" id="clicked_post_id"></div>
+
+<div class="modal fade" id="modal_pop_menu">
+    <div class="modal-dialog modal-dialog_menu">
+      <div class="modal-content modal-content_menu">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body modal_pop_menu_body" id="modal_pop_menu_content">
+            <div align="center">
+                <input type="text" id="modal_pop_menu_input" class="modal_pop_menu_input">
+            </div>
+            <div align="center" class="modal_pop_menu_link_wrapper">
+              <a href=""><span class="clickable modal_pop_menu_copy" id="modal_pop_menu_copy">copy link</span></a>
+            </div>
+            <div align="center" class="modal_pop_menu_link_wrapper">
+              <a href=""><span class="clickable modal_pop_menu_locate" id="modal_pop_menu_locate">move to link</span></a>
+            </div>
+        </div>
+      </div>
+    </div>
+</div>
+
+<div class="hidden" id="post_liking_next_id"></div>
+<div class="modal fade" id="modal_post_liking">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" id="modal_post_liking_wrapper">
+            <div align="center">likes</div>
+            <div id="modal_post_liking_list">
+
+            </div>
+            <a href=""><div class="hidden" align="center" id="modal_post_liking_more">more</div></a>
+        </div>
+      </div>
+    </div>
+</div>
+<div class="modal fade" id="modal_need_login_pop">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <div align="center">need to login</div>
+            <a href="/user/accounts/"><div align="center" class="clickable modal_need_login_select">login / sign up</div></a>
+        </div>
+      </div>
+    </div>
+</div>

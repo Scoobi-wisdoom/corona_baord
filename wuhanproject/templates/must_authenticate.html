@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+	<div class="d-flex flex-column text-center">
+		<p class="m-auto">You must authenticate to view this page. </p>
+
+        <a href="{% url 'account:register' %}"><button class="m-auto btn btn-primary">Create an account</button></a>
+        <p class="m-auto">or</p>
+        <a href="{% url 'account:login' %}"><button class="m-auto btn btn-primary">login</button></a>
+	</div>
+</div>
+
+{% endblock content %}
+
+

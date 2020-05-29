@@ -1,0 +1,179 @@
+{% extends 'base_detail.html' %}
+
+
+{% block content %}
+
+
+    <style type="text/css">
+        .card {
+            max-width: 700px;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        p {
+            margin: 0
+        }
+
+        .voted {
+            background: #dffcc8;
+            solid-color: #3b5998;
+            border-color: #1b6d85;
+            border-radius: 4px;
+            color: #8c8c8c;
+        }
+
+        .unvoted {
+            background: #7ccbfc;
+            border-color: #1b6d85;
+            solid-color: #3b5998;
+            border-radius: 4px;
+            color: #ffffff;
+        }
+    </style>
+    <div class="d-none" id="id">{{ blog_post.id }}</div>
+    <div class="d-none" id="title">{{ blog_post.title }}</div>
+    <div class="d-none" id="up">{{ blog_post.up_count }}</div>
+    <div class="container">
+        <div class="row">
+
+            <!-- Blog Post -->
+            <div class="col-12 col-md-8 offset-md-2 card mx-auto">
+                <div class="card-body mt-2 mb-2">
+                    <h4 class="card-title">{{ blog_post.title }}</h4>
+                    <p class="card-text">{{ blog_post.body|safe|urlize }}</p>
+                    {% if blog_post.author == request.user %}
+                        <div class="text-right">
+                            <a href="{% url 'forum:edit' id=blog_post.id title=blog_post.title %}"
+                               class="btn btn-primary btn-sm">Edit</a>
+                            <a href="{% url 'forum:delete' id=blog_post.id title=blog_post.title %}"
+                               class="btn btn-primary btn-sm">Delete</a>
+                        </div>
+
+                    {% endif %}
+                    {% if request.user.is_authenticated %}
+                        {% if vote %}
+                            <div class="container mt-4">
+                                <div class="row">
+                                    <div class="col-12 text-center" style=""><a
+                                            class="btn text-black 4 p-2 voted vote-btn"
+                                            href="">Voted</a> <span class="p-1"
+                                                                    id="up_count">{{ blog_post.up_count }}</span></div>
+                                </div>
+                            </div>
+
+                        {% else %}
+                            <div class="container mt-4">
+                                <div class="row">
+                                    <div class="col-12 text-center" style=""><a
+                                            class="btn text-black 4 p-2 unvoted vote-btn"
+                                            href="">Up</a> <span class="p-1"
+                                                                 id="up_count">{{ blog_post.up_count }}</span></div>
+                                </div>
+                            </div>
+
+                        {% endif %}
+
+                    {% else %}
+                        <div class="container mt-4">
+                            <div class="row">
+                                <div class="col-12 text-center" style=""><a
+                                        class="btn btn-secondary text-black 4"
+                                        href="{% url 'account:login' %}">Login to Up</a> <span class="p-1"
+                                                                                               id="up_count">{{ blog_post.up_count }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    <div class="container mt-4">
+                        <div class="row">
+                            <div class="col-12 text-center" style=""></div>
+                        </div>
+                    </div>
+
+                    <div class="container mt-4">
+                        <div class="row">
+                            <div class="col-6 text-center" style=""><a class="btn text-white col-12"
+                                                                       href="http://www.facebook.com/sharer.php?u=https://www.coronagram.com{{ request.get_full_path }}"
+                                                                       style="background:#3b5998"
+                                                                       target="_blank"><i
+                                    class="fa fa-facebook-square fa-fw fa-1x py-0"></i> Share</a></div>
+                            <div class="col-6 col-md-6 text-center"><a class="btn text-white col-12"
+                                                                       href="https://twitter.com/share?url=https://www.coronagram.com{{ request.get_full_path }}"
+                                                                       style="background:#55acee"
+                                                                       target="_blank"><i
+                                    class="fa fa-twitter fa-fw fa-1x py-0"></i>
+                                Tweet</a></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="post-comments p-2">
+                    <header>
+                        <h6 class="h6">Comments <span class="no-of-comments">({{ blog_post.comments.count }})</span>
+                        </h6>
+                    </header>
+                    {% for comment in blog_post.get_comments %}
+                        <blockquote>
+                            <div class="card p-1">
+                                <p><span
+                                        class="badge badge-secondary">{{ comment.comment_id }}</span> {{ comment.content }}
+                                </p>
+                                <p>
+                                    <small>{{ comment.author.username }} <span
+                                            class="font-italic"> {{ comment.date_updated|timesince }} ago</span>
+                                    </small>
+                                </p>
+                                {% if comment.author == request.user %}
+                                    <a href="{% url 'forum:comment_delete' id=blog_post.id title=blog_post.title cid=comment.id %}"
+                                       class="btn btn-primary btn-sm">Delete</a>
+                                {% endif %}
+                            </div>
+                        </blockquote>
+
+                    {% endfor %}
+                </div>
+                {% if request.user.is_authenticated %}
+                    <div class="add-comment">
+                        <form method="POST" action="." class="commenting-form">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="form-group col-md-12">
+                                    <small>{{ form }}</small>
+                                </div>
+                                <div class="form-group col-md-12 text-right">
+                                    <button type="submit" class="btn btn-secondary">Submit Comment</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                {% else %}
+                    <div class="add-comment text-center">
+                        <a href="{% url 'account:login' %}">
+                            <button class="btn btn-primary">Login to comment</button>
+                        </a>
+                    </div>
+                {% endif %}
+
+                <div class="card-footer text-muted">
+                    {{ blog_post.date_updated|timesince }} ago by <span
+                        class="font-italic">{{ blog_post.author.username }}</span> views: {{ blog_post.view_count }}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container pt-4">
+        <a href="{% url 'forum:post_list' %}">
+            <div class="row">
+                <button class="col-md-8 mx-auto text-center btn btn-primary p-2">Post List</button>
+            </div>
+        </a>
+    </div>
+
+
+{% endblock content %}
+
+
+

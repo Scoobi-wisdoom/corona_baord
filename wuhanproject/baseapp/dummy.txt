@@ -1,0 +1,194 @@
+base url: bitly.com
+D:\pythonDev\interpreters\forMultichat\lib\site-packages\metadata_parser\__init__.py:922: FutureWarning: `get_metadata` returns a string and is being deprecatedin favor of `get_metadatas` which returns a list.
+  warn_future("""`get_metadata` returns a string and is being deprecated"""
+discrete_url: https://bitly.com/
+discrete_url: https://bitly.com/
+test_url: http://www.bitly.com/
+result: {'status': '301', 'url': 'http://www.bitly.com/', 'location': 'http://bitly.com/'}
+url_was: http://www.bitly.com/
+test_url: http://bitly.com/
+result: {'status': '302', 'url': 'http://bitly.com/', 'location': 'https://bitly.com/'}
+url_was: http://bitly.com/
+test_url: https://www.bitly.com/
+result: {'status': '301', 'url': 'https://www.bitly.com/', 'location': 'http://bitly.com/'}
+url_was: https://www.bitly.com/
+test_url: https://bitly.com/
+result: {'status': '200', 'url': 'https://bitly.com/'}
+url_was: https://bitly.com/
+test_url: http://www.bitly.com
+result: {'status': '301', 'url': 'http://www.bitly.com/', 'location': 'http://bitly.com/'}
+url_was: http://www.bitly.com
+test_url: http://bitly.com
+result: {'status': '302', 'url': 'http://bitly.com/', 'location': 'https://bitly.com/'}
+url_was: http://bitly.com
+test_url: https://www.bitly.com
+result: {'status': '301', 'url': 'https://www.bitly.com/', 'location': 'http://bitly.com/'}
+url_was: https://www.bitly.com
+test_url: https://bitly.com
+[25/Oct/2018 00:31:09] "POST /re/check/url/ HTTP/1.1" 200 10
+result: {'status': '200', 'url': 'https://bitly.com/'}
+url_was: https://bitly.com
+
+
+
+from paypal.standard.pdt.views import process_pdt
+
+def pdt_payment(request):
+    # What you want the button to do.
+    paypal_dict = {
+        "business": "ghdalsrn2sell@email.com", # 판매자 계정
+        "amount": "3.20",
+        "item_name": "name of the item",
+        "notify_url": request.build_absolute_uri(reverse('paypal-ipn')),
+        "return": request.build_absolute_uri(reverse('baseapp:pdt_return')),
+        "cancel_return": request.build_absolute_uri(reverse('baseapp:pdt_cancel_return')),
+        # "custom": "premium_plan",  # Custom command to correlate to some function later (optional)
+    }
+    print('reverse paypal-ipn: ' + reverse('paypal-ipn'))
+    # Create the instance.
+    form = PayPalPaymentsForm(initial=paypal_dict)
+    context = {"form": form}
+    return render(request, "baseapp/pdt_payment.html", context)
+
+# 여기서 paypal - profile - my selling tools - website preferences - auto retrun on - 바로 그 아래 pdt on
+
+@csrf_exempt
+@require_GET
+def pdt_return(request):
+    pdt_obj, failed = process_pdt(request)
+    # 여기서 txn_id는 나의 것인거 같다.
+    print_opj = pdt_obj
+    print('------PDT----------')
+    print(str(print_opj))
+
+    # print('txn_id: ' + print_opj.txn_id) 이거 에러뜸
+    # print('receipt_id: ' + print_opj.receipt_id)
+    # 여기서 receipt 는 로그인없이 결제된 경우
+    # print('receiver_id: ' + print_opj.receiver_id)
+    # 여기서 receiver 는 merchant
+    # print('payer_id: ' + print_opj.payer_id)
+    # 여기서 payer 는 구매자
+    # print('receiver_email: ' + print_opj.receiver_email)
+    # print('txn_type: ' + print_opj.txn_type)
+
+    context = {"failed": failed, "pdt_obj": pdt_obj}
+    # if not failed:
+
+        # WARNING!
+        # Check that the receiver email is the same we previously
+        # set on the business field request. (The user could tamper
+        # with those fields on payment form before send it to PayPal)
+
+        # if pdt_obj.receiver_email == "receiver_email@example.com":
+            # ALSO: for the same reason, you need to check the amount
+            # received etc. are all what you expect.
+
+            # Do whatever action is needed, then:
+            # return render(request, 'baseapp/pdt_cancel_return.html', context)
+    return render(request, 'baseapp/pdt_return.html', context)
+
+@require_GET
+@csrf_exempt
+def pdt_cancel_return(request):
+    pdt_obj, failed = process_pdt(request)
+    # 여기서 txn_id는 나의 것인거 같다.
+    print_opj = pdt_obj
+    print('------PDT----------')
+    print('txn_id: ' + print_opj.txn_id)
+    print('receipt_id: ' + print_opj.receipt_id)
+    # 여기서 receipt 는 로그인없이 결제된 경우
+    print('receiver_id: ' + print_opj.receiver_id)
+    # 여기서 receiver 는 merchant
+    print('payer_id: ' + print_opj.payer_id)
+    # 여기서 payer 는 구매자
+    print('receiver_email: ' + print_opj.receiver_email)
+    print('txn_id: ' + print_opj.txn_id)
+    print('txn_type: ' + print_opj.txn_type)
+
+    context = {"failed": failed, "pdt_obj": pdt_obj}
+    if not failed:
+
+        # WARNING!
+        # Check that the receiver email is the same we previously
+        # set on the business field request. (The user could tamper
+        # with those fields on payment form before send it to PayPal)
+
+        if pdt_obj.receiver_email == "receiver_email@example.com":
+            # ALSO: for the same reason, you need to check the amount
+            # received etc. are all what you expect.
+
+            # Do whatever action is needed, then:
+            return render(request, 'baseapp/pdt_cancel_return.html', context)
+    return render(request, 'baseapp/pdt_return.html', context)
+
+@csrf_exempt
+def cancel_return_view(request):
+    pdt_obj, failed = process_pdt(request)
+    # 여기서 txn_id는 나의 것인거 같다.
+    print_opj = pdt_obj
+    print('------PDT----------')
+    print('txn_id: ' + print_opj.txn_id)
+    print('receipt_id: ' + print_opj.receipt_id)
+    # 여기서 receipt 는 로그인없이 결제된 경우
+    print('receiver_id: ' + print_opj.receiver_id)
+    # 여기서 receiver 는 merchant
+    print('payer_id: ' + print_opj.payer_id)
+    # 여기서 payer 는 구매자
+    print('receiver_email: ' + print_opj.receiver_email)
+    print('txn_id: ' + print_opj.txn_id)
+    print('txn_type: ' + print_opj.txn_type)
+
+    context = {"failed": failed, "pdt_obj": pdt_obj}
+    if not failed:
+
+        # WARNING!
+        # Check that the receiver email is the same we previously
+        # set on the business field request. (The user could tamper
+        # with those fields on payment form before send it to PayPal)
+
+        if pdt_obj.receiver_email == "receiver_email@example.com":
+            # ALSO: for the same reason, you need to check the amount
+            # received etc. are all what you expect.
+
+            # Do whatever action is needed, then:
+            return render(request, 'testapp/success.html', context)
+    return render(request, 'testapp/fail.html', context)
+
+@require_GET
+@csrf_exempt
+def your_pdt_return_url_view(request):
+    pdt_obj, failed = process_pdt(request)
+    # 여기서 txn_id는 나의 것인거 같다.
+    print_opj = pdt_obj
+    print('------PDT----------')
+    print('txn_id: ' + print_opj.txn_id)
+    print('receipt_id: ' + print_opj.receipt_id)
+    # 여기서 receipt 는 로그인없이 결제된 경우
+    print('receiver_id: ' + print_opj.receiver_id)
+    # 여기서 receiver 는 merchant
+    print('payer_id: ' + print_opj.payer_id)
+    # 여기서 payer 는 구매자
+    print('receiver_email: ' + print_opj.receiver_email)
+    print('txn_id: ' + print_opj.txn_id)
+    print('txn_type: ' + print_opj.txn_type)
+
+    context = {"failed": failed, "pdt_obj": pdt_obj}
+    if not failed:
+
+        # WARNING!
+        # Check that the receiver email is the same we previously
+        # set on the business field request. (The user could tamper
+        # with those fields on payment form before send it to PayPal)
+
+        if pdt_obj.receiver_email == "receiver_email@example.com":
+            # ALSO: for the same reason, you need to check the amount
+            # received etc. are all what you expect.
+
+            # Do whatever action is needed, then:
+            return render(request, 'testapp/success.html', context)
+    return render(request, 'testapp/fail.html', context)
+
+
+    re_path(r'^pdt/payment/$', views.pdt_payment, name='pdt_payment'),
+    re_path(r'^pdt/return/$', views.pdt_return, name="pdt_return"),
+    re_path(r'^pdt/cancel/return/$', views.pdt_cancel_return, name="pdt_cancel_return"),

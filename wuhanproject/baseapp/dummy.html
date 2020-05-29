@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>Demo</title>
+    {% include 'others/header_static.html' %}
+    {% load static from staticfiles %}
+    <script src="{% static 'js/navbar.js' %}"></script>
+    <script src="{% static 'js/reconnecting-websocket.min.js' %}"></script>
+
+
+
+    <link href="https://fonts.googleapis.com/css?family=Tauri" rel="stylesheet">
+    {% if user.is_authenticated %}
+    {% else %}
+    {% endif %}
+
+    <style>
+
+    </style>
+
+
+</head>
+<body class="light_background_color height_100">
+<!--navbar start-->
+{% include 'baseapp/_navbar.html' %}
+<!--popover 유용하게 쓸 수 있을 것 같다-->
+
+<!--navbar for search start jquery로 이 navbar 자체를 지웠다 열었다 함 + affix 설정 알아보기 fixed-top 옵션 때문에 어디에 추가하건 위치는 같게 나올 것이다.-->
+<!--필요한설정:
+
+비밀번호변경
+유저네임변경
+메일변경
+팔로우 항상허용 혹은 비허용-비공개
+
+네임변경
+프로필사진변경
+
+회원정지
+회원탈퇴
+
+-->
+<!--navbar end-->
+
+<div class="container-fluid" style="margin-top: 50px;">
+    <div class="row" style="">
+        <div class="col-xs-12 col-sm-offset-2 col-sm-8 col-md-offset-3 col-md-6">
+            <div class="row">
+                <div class="div_base" style="">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <p class="h4" style="" align="center"><span
+                                    class="padding_5"
+                                    style="">Account settings</span></p> <!--여기 이름, 사진, 유저네임, 이메일, 팔로우차단, 차단유저, 팔로잉공개, (글이 완성된 상황일 경우 - )팔로워공개 혹은 전체공개, 아이디검색, 이름검색, 검색허용  -->
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <p class="h4">Name change</p>
+                            <p class="h5">You can change your name.</p>
+                            <p class="h5"><b>Current: </b><span id="span_current_name" style="white-space: pre-wrap">{{ request.user.usertextname.name }}</span></p>
+                        </div>
+                        <div class="col-xs-9 padding_top_5">
+                            <div class="input-group-lg">
+                                <input class="width_100_i" id="input_name" placeholder="name input" type="text">
+                            </div>
+                        </div>
+                        <div class="col-xs-3">
+                            <p class="h4"><a href="#"><span id="span_name"
+                                    class="clickable padding_5 pastel_bc3">change</span></a></p> <!--여기 이름, 사진, 유저네임, 이메일, 팔로우차단, 차단유저, 팔로잉공개, (글이 완성된 상황일 경우 - )팔로워공개 혹은 전체공개, 아이디검색, 이름검색, 검색허용  -->
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <p class="h4">Username(ID) change</p>
+                            <p class="h5">Username(ID) can be changed.</p>
+                            <p class="h5"><b>Current: </b><span id="span_current_username" style="white-space: pre-wrap">{{ request.user.userusername.username }}</span></p>
+                        </div>
+                        <div class="col-xs-9 padding_top_5">
+                            <div class="input-group-lg">
+                                <input class="width_100_i" id="input_username" placeholder="username input" type="text">
+                            </div>
+                        </div>
+                        <div class="col-xs-3">
+                            <p class="h4"><a href="#"><span id="span_username"
+                                    class="clickable padding_5 pastel_bc2">change</span></a></p> <!--여기 이름, 사진, 유저네임, 이메일, 팔로우차단, 차단유저, 팔로잉공개, (글이 완성된 상황일 경우 - )팔로워공개 혹은 전체공개, 아이디검색, 이름검색, 검색허용  -->
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <p class="h4">Email change</p>
+                            <p class="h5">If you change your email, confirmation email have to be checked in 10min.</p>
+                            <p class="h5"><b>Current: </b><span id="span_current_email" style="white-space: pre-wrap">{{ request.user.userprimaryemail.email }}</span></p>
+                            <p class="h5">Unless you confirm your email, It will not be changed.</p>
+                        </div>
+                        <div class="col-xs-9 padding_top_5">
+                            <div class="input-group-lg">
+                                <input class="width_100_i" id="input_email" placeholder="email input" type="text">
+                            </div>
+                        </div>
+                        <div class="col-xs-3">
+                            <p class="h4"><a href="#"><span id="span_email"
+                                    class="clickable padding_5 pastel_bc1">change</span></a></p> <!--여기 이름, 사진, 유저네임, 이메일, 팔로우차단, 차단유저, 팔로잉공개, (글이 완성된 상황일 경우 - )팔로워공개 혹은 전체공개, 아이디검색, 이름검색, 검색허용  -->
+                        </div>
+                    </div>
+                    {% if not user.userprimaryemail.is_permitted %}
+                    <div class="row email_token_resend" id="email_token_send">
+                        <div class="col-xs-12">
+                            <p class="h4">Current you are not permitted. You should permit your email.</p>
+                        </div>
+                        <div class="col-xs-9 padding_top_5">
+                            <p class="h4">Email Authentication Token Resend to ({{ user.userprimaryemail.email }})</p>
+                        </div>
+                        <div class="col-xs-3">
+                            <p class="h4"><a href="#"><span
+                                    class="clickable padding_5 pastel_bc1">Resend</span></a></p> <!--여기 이름, 사진, 유저네임, 이메일, 팔로우차단, 차단유저, 팔로잉공개, (글이 완성된 상황일 경우 - )팔로워공개 혹은 전체공개, 아이디검색, 이름검색, 검색허용  -->
+                        </div>
+                        <div class="col-xs-12">
+                            <p class="h4 text-danger"></p>
+                        </div>
+                    </div>
+                    {% endif %}
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <p class="h4" style="" align="center"><a href="#"><span
+                                    class="clickable padding_5"
+                                    style="background-color: #eff0ac;">Other Account settings Change</span></a></p> <!--여기 이름, 사진, 유저네임, 이메일, 팔로우차단, 차단유저, 팔로잉공개, (글이 완성된 상황일 경우 - )팔로워공개 혹은 전체공개, 아이디검색, 이름검색, 검색허용  -->
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <p class="h4" style="" align="center"><a href="{% url 'authapp:password_change' %}"><span
+                                    class="clickable pastel_bc1 padding_5">Password Change</span></a></p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <p class="h4" style="" align="center"><a href="{% url 'authapp:deactivate_user' %}"><span
+                                    class="clickable pastel_bc2 padding_5">Deactivate account</span></a></p>
+                        </div>
+                        <div class="col-xs-12">
+                            <p class="h4" style="" align="center"><a href="{% url 'authapp:delete_user' %}"><span
+                                    class="clickable pastel_bc3 padding_5">Delete account</span></a></p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+<script defer>
+    $(function () {
+    var val_name, val_username, val_email;
+
+
+        $('#span_name').click(function (e) {
+            e.preventDefault();
+            val_name = $('#input_name').val();
+            if (websocket_on === false){
+                socket.send(JSON.stringify({
+                    "command": "name",
+                    "name": val_name
+                }));
+            } else {
+                $.ajax({
+                    url:'/re_settings/ajax/',
+                    type:'post',
+                    dataType:'json',
+                    cache:false,
+                    data:{
+                        command: 'name',
+                        name: val_name,
+                    },
+                    success:function (data) {
+                        if (data.res === 1){
+                            console.log(data)
+                            $('#span_current_name').html(data.name);
+                            $('#input_name').val('');
+                        } else if (data.res === 0){
+
+                        }
+                    }
+                });
+            }
+        })
+
+    })
+</script>
+<script defer>
+
+    var browser_websocket;
+    var websocket_on = false;
+    var socket;
+
+    $(function () {
+
+        if (window.WebSocket) {
+            browser_websocket = true
+        } else {
+            browser_websocket = false;
+            websocket_on = false
+        }
+
+        // Correctly decide between ws:// and wss://
+        var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
+        var ws_path = ws_scheme + '://' + window.location.host + "/re_settings/socket/";
+        console.log("Connecting to " + ws_path);
+        if (browser_websocket === true) {
+            socket = new ReconnectingWebSocket(ws_path);
+
+            // Helpful debugging
+            socket.onopen = function () {
+                console.log("Connected to chat socket");
+                websocket_on = true;
+            };
+            socket.onclose = function () {
+                console.log("Disconnected from chat socket");
+                websocket_on = false;
+            };
+
+            // Handle incoming messages
+            socket.onmessage = function (message) {
+                // Decode the JSON
+                console.log("Got websocket message " + message.data);
+                var data = JSON.parse(message.data);
+                // Handle errors
+                if (data.error) {
+                    return;
+                }
+
+                // Handle joining
+                if (data.join) {
+                    console.log("Joining room " + data.join);
+                    var roomdiv = $(
+                        "<div class='room' id='room-" + data.join + "'>" +
+                        "<h2>" + data.title + "</h2>" +
+                        "<div class='messages'></div>" +
+                        "<form><input><button>Send</button></form>" +
+                        "</div>"
+                    );
+                    // Hook up send button to send a message
+                    roomdiv.find("form").on("submit", function () {
+                        socket.send(JSON.stringify({
+                            "command": "send",
+                            "room": data.join,
+                            "message": roomdiv.find("input").val()
+                        }));
+                        roomdiv.find("input").val("");
+                        return false;
+                    });
+                    $("#chats").append(roomdiv);
+                    // Handle leaving
+                } else if (data.leave) {
+                    console.log("Leaving room " + data.leave);
+                    $("#room-" + data.leave).remove();
+                    // Handle getting a message
+                } else if (data.message || data.msg_type != 0) {
+                    var msgdiv = $("#room-" + data.room + " .messages");
+                    var ok_msg = "";
+                    // msg types are defined in chat/settings.py
+                    // Only for demo purposes is hardcoded, in production scenarios, consider call a service.
+                    switch (data.msg_type) {
+                        case 0:
+                            // Message
+                            ok_msg = "<div class='message'>" +
+                                "<span class='username'>" + data.username + "</span>" +
+                                "<span class='body'>" + data.message + "</span>" +
+                                "</div>";
+                            break;
+                        case 1:
+                            // Warning / Advice messages
+                            ok_msg = "<div class='contextual-message text-warning'>" + data.message +
+                                "</div>";
+                            break;
+                        default:
+                            console.log("Unsupported message type!");
+                            return;
+                    }
+                    msgdiv.append(ok_msg);
+                    msgdiv.scrollTop(msgdiv.prop("scrollHeight"));
+                } else {
+                    console.log("Cannot handle message!");
+                }
+            };
+
+
+            // Room join/leave
+            $("li.room-link").click(function () {
+                roomId = $(this).attr("data-room-id");
+                if (inRoom(roomId)) {
+                    // Leave room
+                    $(this).removeClass("joined");
+                    socket.send(JSON.stringify({
+                        "command": "leave",
+                        "room": roomId
+                    }));
+                } else {
+                    // Join room
+                    $(this).addClass("joined");
+                    socket.send(JSON.stringify({
+                        "command": "join",
+                        "room": roomId
+                    }));
+                }
+            });
+        }
+    });
+</script>
+</html>

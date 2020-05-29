@@ -1,0 +1,145 @@
+<nav class="navbar navbar-default navbar-fixed-top navbar_base">
+    <div class="container-fluid padding_right_0">
+        <ul class="nav navbar-nav navbar_ul_base">
+
+            <li>
+                {% if user.is_authenticated %}
+                    <a class="padding_15_i" id="a_home" href="{% url 'baseapp:home' %}">
+                        <i id="i_home" class="glyphicon glyphicon-home"></i>
+                    </a>
+                {% else %}
+                    <a class="padding_15_i" id="a_home" href="{% url 'baseapp:home' %}">
+                        <i id="i_home" class="glyphicon glyphicon-home"></i>
+                    </a>
+                {% endif %}
+            </li>
+            <li>
+                {% if user.is_authenticated %}
+                    <a class="padding_15_i" id="a_feed" href="{% url 'baseapp:follow_feed' %}">
+                        <i id="i_feed" class="glyphicon glyphicon-list-alt"></i>
+                    </a>
+                {% else %}
+                    <a class="padding_15_i" id="a_feed" href="{% url 'baseapp:main_create_log_in' %}">
+                        <i id="i_feed" class="glyphicon glyphicon-list-alt"></i>
+                    </a>
+                {% endif %}
+            </li>
+            <li>
+
+                {% if user.is_authenticated %}
+                    <a class="padding_15_i" id="a_plus" href="{% url 'baseapp:create_new' %}">
+                        <i id="i_plus" class="glyphicon glyphicon-plus"></i>
+                    </a>
+                {% else %}
+                    <a class="padding_15_i" id="a_plus" href="{% url 'baseapp:main_create_log_in' %}">
+                        <i id="i_plus" class="glyphicon glyphicon-plus"></i>
+                    </a>
+                {% endif %}
+
+            </li>
+
+            <li id="nav_div_ul_li_bsearch">
+                {% if user.is_authenticated %}
+                    {% if user.noticecount.count == 0 %}
+                        <a class="padding_15_i" id="a_note" href="{% url 'baseapp:note_all' %}">
+                            <i id="i_note" class="glyphicon glyphicon-certificate"></i>
+                        </a>
+                    {% else %}
+                        <a class="padding_15_i" id="a_note" href="{% url 'baseapp:note_all' %}">
+                            <span id="i_note" class="nav_note_count">{{ user.noticecount.count }}</span>
+                        </a>
+                    {% endif %}
+                {% else %}
+                    <a class="padding_15_i" id="a_note" href="{% url 'baseapp:main_create_log_in' %}">
+                        <i id="i_note" class="glyphicon glyphicon-certificate"></i>
+                    </a>
+                {% endif %}
+
+            </li>
+            <li>
+                <form class="navbar-form navbar-left mobile_display_none margin_top_bottom_10">
+                    <div class="input-group input-group-sm">
+                        <input class="form-control" placeholder="Search" id="search_desktop_input" type="text">
+                        <div class="input-group-btn">
+                            <i class="btn btn-default" id="search_desktop_btn"><i
+                                    class="glyphicon glyphicon-search"></i>
+                            </i>
+                        </div>
+                    </div>
+                </form>
+            </li>
+
+            <li class="nav_li_last_option desktop_display_none">
+                <a href="#" class="padding_15_i" id="nav_li_a_menu">
+                    <i class="glyphicon glyphicon-menu-down"></i>
+                </a>
+            </li>
+
+        </ul>
+    </div>
+</nav>
+
+<span class="nav_badge" id="badge_home" data-u="#i_home"></span>
+<span class="nav_badge" id="badge_feed" data-u="#i_feed"></span>
+<span class="nav_badge" id="badge_plus" data-u="#i_plus"></span>
+<span class="nav_badge" id="badge_note" data-u="#i_note"></span>
+
+<div class="modal fade" id="modal_menu">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                {% if user.is_authenticated %}
+                    <div class="row">
+                        <p class="h4" align="center"><a href="/{{ user.userusername.username }}/"><span
+                                class="clickable">My Page</span></a></p>
+                    </div>
+                    <div class="row">
+                        <p class="h4" align="center"><a href="{% url 'authapp:settings' %}"><span class="clickable">Settings</span></a>
+                        </p>
+                    </div>
+
+                    <div class="row">
+                        <p class="h4" align="center"><a href="https://twitter.com/mingu_gam" target="_blank"
+                                                        rel="noopener noreferrer"><span
+                                class="clickable">about/help</span></a>
+                        </p>
+                    </div>
+                    <div class="row">
+                        <p class="h4" align="center"><a href="/mingu/"><span
+                                class="clickable">about question</span></a>
+                        </p>
+                    </div>
+                    <div class="row">
+                        <p class="h4" align="center"><a href="{% url 'authapp:log_out' %}"><span class="clickable">Log out</span></a>
+                        </p>
+                    </div>
+                {% else %}
+                    <div class="row">
+                        <p class="h4" align="center"><a href="{% url 'baseapp:main_create_log_in' %}"><span
+                                class="clickable">Log in / Create new account</span></a></p>
+                    </div>
+
+                    <div class="row">
+                        <p class="h4" align="center"><a href="https://twitter.com/mingu_gam" target="_blank"
+                                                        rel="noopener noreferrer"><span
+                                class="clickable">about/help</span></a>
+                        </p>
+                    </div>
+                    <div class="row">
+                        <p class="h4" align="center"><a href="/mingu/"><span
+                                class="clickable">about question</span></a>
+                        </p>
+                    </div>
+                {% endif %}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: /a/admin/
+Disallow: /b/admin/
+Allow: /
+
+Sitemap: https://www.coronagram.com/a/sitemap.xml

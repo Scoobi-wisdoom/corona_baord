@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    {% include 'others/header_static.html' %}
+</head>
+<body>
+<h1>Decimal input</h1>
+<br>
+<input id="input_decimal" pattern="^\d*(\.\d{0,2})?$"/>
+<input id="input_only_" pattern="^\d*$"/>
+<input type=number step="0.01"/>
+<button id="btn_decimal">button</button>
+<br>
+<a href="//" onClick="window.open(this.href, '', 'width=400, height=430'); return false;"><span id="test_btn">click</span></a>
+<!--
+{{ localdate|date:'Y-m-d'}}
+                 return   'day': localdate()
+-->
+<!-- writes out the form tag automatically -->
+<script>
+    $('#btn_decimal').click(function (e) {
+        e.preventDefault()
+        var pattern = /^\d*(\.\d{0,2})?$/
+        var get_value = $('#input_decimal').val()
+        var str_value = get_value.toString()
+        var fixed = Number(get_value).toFixed(2)
+        console.log(get_value)
+        console.log(fixed)
+        console.log(typeof fixed)
+        console.log(typeof parseInt(fixed))
+        console.log(str_value.match())
+    })
+$(document).on('keydown', 'input[pattern]', function(e){
+  var input = $(this);
+  var oldVal = input.val();
+  var regex = new RegExp(input.attr('pattern'), 'g');
+
+  setTimeout(function(){
+    var newVal = input.val();
+    if(!regex.test(newVal)){
+      input.val(oldVal);
+    }
+  }, 0);
+});
+</script>
+</body>
+</html>

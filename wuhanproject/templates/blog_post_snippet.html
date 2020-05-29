@@ -1,0 +1,75 @@
+<style type="text/css">
+    .card {
+        width: 100%;
+    }
+
+    .card-body {
+        padding: 16px;
+    }
+</style>
+{% load tem_extras %}
+
+{% if blog_post %}
+    <div class="container">
+        {% if query %}
+            <div class="row p-1">
+                <div class="card m-auto">
+                    <div class="card-body mt-2 mb-2">
+                        <h2 class="card-title">Search results</h2>
+                        <p class="card-text">Results matching the search: "{{ query }}"</p>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        <div class="row">
+            <!-- Blog Post -->
+            <a href="{% url 'forum:detail' id=post.id title=post.title %}">
+
+                <div class="card m-auto">
+                    <div class="card-body mt-2 mb-2">
+                        <h4 class="card-title">{{ blog_post.title }}</h4>
+                        <p class="card-text">{{ blog_post.body|safe|truncatechars:40 }}</p>
+
+                        <header>
+                            <h6 class="h6">Comments <span class="no-of-comments">({{ blog_post.comments.count }})</span>
+                            </h6>
+                        </header>
+                        {% if blog_post.author == request.user %}
+                            <header class="text-right">
+                                <a href="{% url 'forum:edit' id=blog_post.id title=blog_post.title %}"
+                                   class="btn btn-primary btn-sm m-1">Edit</a>
+                                <a href="{% url 'forum:delete' id=blog_post.id title=blog_post.title %}"
+                                   class="btn btn-primary btn-sm m-1">Delete</a>
+                            </header>
+                        {% else %}
+                            <header class="text-right">
+                                <a href="{% url 'forum:delete' id=blog_post.id title=blog_post.title %}"
+                                   class="btn btn-primary btn-sm m-1 d-none">Delete</a>
+                            </header>
+                        {% endif %}
+                    </div>
+                    <div class="card-footer text-muted">
+                        {{ blog_post.date_published|timesince }} ago by <span
+                            class="font-italic">{{ blog_post.author }}</span> views: {{ blog_post.view_count }}  up: {{ blog_post.up_count }}
+                    </div>
+                </div>
+            </a>
+
+        </div>
+    </div>
+
+{% else %}
+
+    <div class="container">
+        <div class="row">
+            <div class="card m-auto">
+                <div class="card-body mt-2 mb-2">
+                    <h2 class="card-title">No results</h2>
+                    <p class="card-text">There are no results matching the search: "{{ query }}"</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endif %}

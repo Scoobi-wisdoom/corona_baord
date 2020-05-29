@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+    {% if cnn_item %}
+
+        <div class="pt-3" style="">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4>Corona News 50</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% for cnn in cnn_item %}
+
+            <div class="py-2">
+                <div class="container">
+
+                    <a href="{{ cnn.url }}"
+                       target="_blank" rel="noopener noreferrer">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h6 class="">{{ cnn.title }}</h6>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <p class="lead">{{ cnn.content }}</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <p>{{ cnn.published_date_raw|timesince }} ago</p>
+                            </div>
+                        </div>
+
+                    </a>
+                </div>
+            </div>
+
+        {% endfor %}
+        <div class="container">
+            <a href="{% url 'baseapp:home' %}">
+                <div class="row">
+                    <button class="col-md-8 mx-auto text-center btn btn-primary p-2">Back to Home</button>
+                </div>
+            </a>
+        </div>
+    {% endif %}
+
+
+    <div class="py-3">
+        <div class="container">
+            <div class="row">
+                <div class="col-6 text-center" style=""><a class="btn text-white col-10"
+                                                           href="http://www.facebook.com/sharer.php?u=https://www.coronagram.com{{ request.get_full_path }}"
+                                                           style="background:#3b5998"
+                                                           target="_blank"><i
+                        class="fa fa-facebook-square fa-fw fa-1x py-1"></i> Share</a></div>
+                <div class="col-6 col-md-6 text-center"><a class="btn text-white col-10"
+                                                           href="https://twitter.com/share?url=https://www.coronagram.com{{ request.get_full_path }}"
+                                                           style="background:#55acee"
+                                                           target="_blank"><i
+                        class="fa fa-twitter fa-fw fa-1x py-1"></i>
+                    Tweet</a></div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

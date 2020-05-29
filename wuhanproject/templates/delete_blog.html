@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+	<form action="." method="POST">{% csrf_token %}
+		<div class="d-flex flex-column">
+			<p class="m-auto">Are you sure to delete this?</p>
+            <br>
+			<p class="m-auto"><input type="submit" value="Delete"/>
+			<p class="m-auto">
+				<a href="../">Cancel</a>
+			</p>
+		</div>
+	</form>
+</div>
+
+{% endblock content %}
+
+
